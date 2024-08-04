@@ -139,3 +139,58 @@ func TestExtrinsicSign(t *testing.T) {
 	fmt.Printf("Signed extrinsic: %+v\n", signedExt)
 }
 
+func TestSubmitExtrinsic(t *testing.T) {
+	url := "ws://localhost:9944"
+	node, err := NewPolkadotNode(url)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	defer node.Client.Close()
+
+	ext := extrinsic.NewExtrinsic(primitive.Call{
+		Module: "balances",
+		Func:   "transfer",
+		Args: []primitive.Data{
+			primitive.NewU128(100),
+			primitive.NewAccountId("0x1234567890abcdef"),
+		},
+	})
+	signer, err := sr25519.NewPairFromSeed("0x1234567890abcdef", nil)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	signedExt, err := node.ExtrinsicSign(ext, signer)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	hash, err := node.SubmitExtrinsic(signedExt)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("Submitted extrinsic with hash %s\n", hash.Hex())
+}
+
+func TestQuerySubscribe(t *testing.T) {
+	url := "ws://localhost:9944"
+	node, err := NewPolkadotNode(url)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	defer node.Client.Close()
+
+	query := query.NewSubscription("system_events", "NewHead")
+	subscriber, err := node.QuerySubscribe(query)
+	if err!= nil {
+		t.Fatal(err)
+	}
+	defer subscriber.Unsubscribe()
+
+	for {
+		select {
+		case <-subscriber.Done():
+			return
+		case event := <-subscriber.Chan():
+			fmt.Printf("Received event: %+v\n", event)
+		}
+	}
+}
