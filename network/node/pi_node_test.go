@@ -20,22 +20,6 @@ func TestNewPiNode(t *testing.T) {
 	}
 	if node.privateKey == nil {
 		t.Errorf("Expected node.privateKey to be non-nil")
-
-    func TestNewPiNode(t *testing.T) {
-	ctx := context.Background()
-	privateKey, _, err := GenerateKeyPair()
-	if err!= nil {
-		t.Errorf("Expected GenerateKeyPair to succeed, but got error: %s", err)
-	}
-	node, err := NewPiNode(ctx, privateKey)
-	if err!= nil {
-		t.Errorf("Expected NewPiNode to succeed, but got error: %s", err)
-	}
-	if node.Host == nil {
-		t.Errorf("Expected node.Host to be non-nil")
-	}
-	if node.privateKey == nil {
-		t.Errorf("Expected node.privateKey to be non-nil")
 	}
 }
 
@@ -138,27 +122,6 @@ func TestUnmarshalJSON(t *testing.T) {
 	}
 	if unmarshaledNode.publicKey.X.Cmp(node.publicKey.X)!= 0 {
 		t.Errorf("Expected unmarshaledNode.publicKey.X to match node.publicKey.X")
-
-    func TestUnmarshalJSON(t *testing.T) {
-	ctx := context.Background()
-	privateKey, _, err := GenerateKeyPair()
-	if err!= nil {
-		t.Errorf("Expected GenerateKeyPair to succeed, but got error: %s", err)
-	}
-	node, err := NewPiNode(ctx, privateKey)
-	if err!= nil {
-		t.Errorf("Expected NewPiNode to succeed, but got error: %s", err)
-	}
-	jsonData, err := node.MarshalJSON()
-	if err!= nil {
-		t.Errorf("Expected node.MarshalJSON to succeed, but got error: %s", err)
-	}
-	unmarshaledNode, err := UnmarshalJSON(jsonData)
-	if err!= nil {
-		t.Errorf("Expected UnmarshalJSON to succeed, but got error: %s", err)
-	}
-	if unmarshaledNode.publicKey.X.Cmp(node.publicKey.X)!= 0 {
-		t.Errorf("Expected unmarshaledNode.publicKey.X to match node.publicKey.X")
 	}
 	if unmarshaledNode.peerInfo.ID!= node.peerInfo.ID {
 		t.Errorf("Expected unmarshaledNode.peerInfo.ID to match node.peerInfo.ID")
@@ -187,3 +150,4 @@ func TestHandleStream(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 	// Verify that the stream was handled correctly...
 }
+	
